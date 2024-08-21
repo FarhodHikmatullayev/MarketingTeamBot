@@ -28,13 +28,13 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     if on_off == 'on':
         status = await db.update_status(id=status['id'], user_id=user_id, at_work=True)
 
-        text = f"{call.from_user.full_name} {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} da ishga keldi"
+        text = f"{call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishga keldi"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
 
     elif on_off == 'off':
         status = await db.update_status(id=status['id'], user_id=user_id)
 
-        text = f"{call.from_user.full_name} {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi"
+        text = f"{call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
 
     text = "Muvaffaqiyatli registratsiyadan o'tildi"
