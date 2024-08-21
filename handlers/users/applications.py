@@ -75,10 +75,13 @@ async def get_description_for_application(message: types.Message, state: FSMCont
 @dp.message_handler(text="Dam olishga tushgan arizalar", user_id=ADMINS)
 async def get_users(message: types.Message):
     all_applications = await db.select_all_applications()
+    print('all_applications', all_applications)
     applications = []
     for i in all_applications:
         if not i['confirmed_by_id']:
             applications.append(i)
+            print(1)
+    print('applications', applications)
     if not applications:
         text = "Hali dam olish uchun arizalar mavjud emas"
         await message.answer(text=text, reply_markup=back_menu)
@@ -133,7 +136,19 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
             id=application_id,
             confirmed_by_id=user['id']
         )
+        applications = await db.select_applications(id=application_id)
+
+        application_user_id = applications[0]['user_id']
+        application_user = await db.select_users(id=application_user_id)
+
         text = "Siz arizani rad etdingiz"
+        rejected_text = "❌❌\n"
+        rejected_text += "Sizning arizangiz rad etildi.\n"
+        rejected_text += f"Rad etilish sababi: 'sabab'\n\n"
+        rejected_text += f"{user['full_name']}"
+
+        await bot.send_message(chat_id=application_user[0]['telegram_id'], text=rejected_text)
+
         await call.message.answer(text=text, reply_markup=back_menu)
         await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     elif confirmation == 'confirm':
@@ -145,5 +160,18 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
             is_confirmed=True
         )
         text = "Siz arizani tasdiqladingiz"
+
+        applications = await db.select_applications(id=application_id)
+        application_user_id = applications[0]['user_id']
+        application_user = await db.select_users(id=application_user_id)
+
+        confirmed_text = "✅✅\n"
+        confirmed_text += "Sizning arizangiz tasdiqlandi va sizga ruhsat berildi.\n"
+        if "sabab":
+            confirmed_text += f"Izoh: 'izoh'\n\n"
+        confirmed_text += f"{user['full_name']}"
+
+        await bot.send_message(chat_id=application_user[0]['telegram_id'], text=confirmed_text)
+
         await call.message.answer(text=text, reply_markup=back_menu)
         await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)

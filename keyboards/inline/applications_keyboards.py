@@ -8,10 +8,13 @@ application_confirm_callback_data = CallbackData('confirm', 'application_id', 'c
 
 
 async def applications_keyboard(*applications):
-    markup = InlineKeyboardMarkup()
+    print('applications_in_keyboard', applications)
+    markup = InlineKeyboardMarkup(row_width=1)
     buttons = []
+    applications = applications[0]
     for application in applications:
-        application = application[0]
+        print(2)
+        # application = application[0]
         user_id = application['user_id']
         users = await db.select_users(id=user_id)
         user_full_name = users[0]['full_name']

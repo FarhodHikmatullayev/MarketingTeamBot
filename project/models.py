@@ -50,6 +50,7 @@ class Applications(models.Model):
     is_confirmed = models.BooleanField(null=True, blank=True)
     confirmed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='confirmed_applications', null=True,
                                      blank=True)
+    confirmed_description = models.TextField(null=True, blank=True)
     confirmed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
