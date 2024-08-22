@@ -7,3 +7,4 @@ class ApplicationState(StatesGroup):
     is_confirmed = State()
     confirmed_at = State()
     confirmed_by_id = State()
+    confirmed_description = State()

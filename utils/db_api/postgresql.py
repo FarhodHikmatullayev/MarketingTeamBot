@@ -99,6 +99,10 @@ class Database:
         sql = "UPDATE Applications SET confirmed_by_id=$2, is_confirmed=$3, confirmed_at=$4 WHERE id=$1"
         return await self.execute(sql, id, confirmed_by_id, is_confirmed, confirmed_at, execute=True)
 
+    async def update_application_confirmed_description(self, id, confirmed_description):
+        sql = "UPDATE Applications SET confirmed_description=$2 WHERE id=$1"
+        return await self.execute(sql, id, confirmed_description, execute=True)
+
     # for status
 
     async def select_all_status(self):
