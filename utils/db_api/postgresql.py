@@ -121,3 +121,28 @@ class Database:
     async def update_status(self, id, user_id, at_work=False):
         sql = "UPDATE Status SET user_id=$2, at_work=$3 WHERE id=$1"
         return await self.execute(sql, id, user_id, at_work, execute=True)
+
+    # for registrations
+    async def create_registration(self, user_id, arrival_time):
+        sql = "INSERT INTO Registrations (user_id, arrival_time) VALUES($1, $2) returning *"
+        return await self.execute(sql, user_id, arrival_time, fetchrow=True)
+
+    async def update_registration(self, id, user_id, arrival_time, departure_time, total_time):
+        sql = "UPDATE Registrations SET user_id=$2, arrival_time=$3, departure_time=$4, total_time=$5 WHERE id=$1"
+        return await self.execute(sql, id, user_id, arrival_time, departure_time, total_time, execute=True)
+
+    async def get_today_registrations_for_user_by_arrival_time(self, user_id):
+        today = datetime.datetime.now().date()
+        sql = """
+            SELECT * FROM Registrations
+            WHERE DATE(arrival_time) = $1 AND user_id = $2
+        """
+        return await self.execute(sql, today, user_id, fetch=True)
+
+    async def get_today_registrations_for_user_by_departure_time(self, user_id):
+        today = datetime.datetime.now().date()
+        sql = """
+            SELECT * FROM Registrations
+            WHERE DATE(departure_time) = $1 AND user_id = $2
+        """
+        return await self.execute(sql, today, user_id, fetch=True)

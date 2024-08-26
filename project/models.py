@@ -33,6 +33,7 @@ class Registration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     arrival_time = models.DateTimeField(null=True, blank=True)
     departure_time = models.DateTimeField(null=True, blank=True)
+    total_time = models.DurationField(null=True, blank=True)
 
     class Meta:
         db_table = "registrations"
