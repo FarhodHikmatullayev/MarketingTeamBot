@@ -73,7 +73,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             departure_time=datetime.datetime.now(),
             total_time=total_time,
         )
-        text = f"{call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi\n" \
+        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi\n" \
                f"Umumiy {hours} soat {minutes} daqiqa vaqt ishladi"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
