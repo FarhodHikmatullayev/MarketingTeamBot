@@ -41,7 +41,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             user_id=user_id,
             arrival_time=datetime.datetime.now()
         )
-        text = f"{call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishga keldi"
+        text = f"💼 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishga keldi"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
         txt = "Siz ishga kelganingizni tasdiqladingiz"
@@ -53,7 +53,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
 
     elif on_off == 'off' and not registrations_arrival:
         status = await db.update_status(id=status['id'], user_id=user_id)
-        text = f"{call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi\n"
+        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi\n"
         txt = "Ishdan ketganingizni tasdiqladingiz"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
