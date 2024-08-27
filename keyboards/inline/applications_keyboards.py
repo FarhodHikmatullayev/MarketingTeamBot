@@ -8,7 +8,7 @@ application_confirm_callback_data = CallbackData('confirm', 'application_id', 'c
 
 
 async def applications_keyboard(*applications):
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
     buttons = []
     applications = applications[0]
     for application in applications:

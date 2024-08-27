@@ -2,6 +2,7 @@ import datetime
 
 import pytz
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
 from data.config import GROUP_CHAT_ID
 from keyboards.default.menu import back_menu
@@ -9,8 +10,9 @@ from keyboards.inline.registration import registration_inline_keyboard, registra
 from loader import dp, db, bot
 
 
-@dp.message_handler(text="Keldi-ketdi registratsiya")
-async def start_registration(message: types.Message):
+@dp.message_handler(text="Keldi-ketdi registratsiya", state='*')
+async def start_registration(message: types.Message, state: FSMContext):
+    await state.finish()
     user_telegram_id = message.from_user.id
     users = await db.select_users(telegram_id=user_telegram_id)
     user = users[0]
@@ -32,8 +34,8 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     registrations_departure = await db.get_today_registrations_for_user_by_departure_time(user_id=user_id)
     if on_off == 'on' and registrations_arrival:
         registration = registrations_arrival[0]
-        arrival_time = registration['arrival_time'].time()
-        txt = f"Siz bugun {arrival_time} da ishga kelganingizni tasdiqlagansiz"
+        arrival_time = registration['arrival_time']
+        txt = f"Siz bugun {(arrival_time + datetime.timedelta(hours=5)).strftime('%d-%B-%Y, %H:%M')} da ishga kelganingizni tasdiqlagansiz"
 
     elif on_off == 'on':
         status = await db.update_status(id=status['id'], user_id=user_id, at_work=True)
@@ -48,8 +50,8 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
 
     elif on_off == 'off' and registrations_departure:
         registration = registrations_departure[0]
-        departure_time = registration['departure_time'].time()
-        txt = f"Siz bugun {departure_time} da ishdan ketganingizni tasdiqlagansiz"
+        departure_time = registration['departure_time']
+        txt = f"Siz bugun {(departure_time + datetime.timedelta(hours=5)).strftime('%d-%B-%Y, %H:%M')} da ishdan ketganingizni tasdiqlagansiz"
 
     elif on_off == 'off' and not registrations_arrival:
         status = await db.update_status(id=status['id'], user_id=user_id)

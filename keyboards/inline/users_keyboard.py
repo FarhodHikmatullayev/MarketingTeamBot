@@ -6,7 +6,7 @@ users_callback_data = CallbackData('users', 'user_id')
 
 
 async def users_inline_keyboard():
-    markup = InlineKeyboardMarkup(row_width=1)
+    markup = InlineKeyboardMarkup(row_width=2)
     users = await db.select_all_users()
     buttons = []
     for user in users:

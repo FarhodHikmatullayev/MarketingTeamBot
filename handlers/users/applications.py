@@ -11,6 +11,7 @@ from keyboards.inline.applications_keyboards import applications_keyboard, appli
 from keyboards.inline.confirmation import confirm_keyboard
 from loader import dp, db, bot
 from states.applications import ApplicationState
+from utils.send_message import send_message_to_admins
 
 
 @dp.message_handler(text="Dam olish so'rash")
@@ -27,8 +28,8 @@ async def ask_for(message: types.Message, state: FSMContext):
     )
 
     text = "Nega javob olmoqchisiz? \n" \
-           "Sababini yozing"
-    await message.answer(text=text)
+           "Sababini va qachonga javob so'ramoqchiligingizni kiriting"
+    await message.answer(text=text, reply_markup=back_menu)
     await state.set_state(ApplicationState.description.state)
 
 
@@ -54,6 +55,11 @@ async def save_warning(msg: types.Message, state: FSMContext):
     text = "Muvaffaqiyatli saqlandi"
     await msg.answer(text=text, reply_markup=back_menu)
     await state.finish()
+    users = await db.select_users(id=user_id)
+    text = "Dam olish uchun yangi ariza kelib tushdi\n" \
+           f"Ariza egasi: {users[0]['full_name']}\n" \
+           "Arizalar bo'limidan kirib tekshirib ko'ring"
+    await send_message_to_admins(message=text)
 
 
 @dp.message_handler(state=ApplicationState.description)
@@ -73,8 +79,9 @@ async def get_description_for_application(message: types.Message, state: FSMCont
     await message.answer(text=text, reply_markup=back_or_save_keyboard)
 
 
-@dp.message_handler(text="Dam olishga tushgan arizalar", user_id=ADMINS)
-async def get_users(message: types.Message):
+@dp.message_handler(text="Dam olishga tushgan arizalar", user_id=ADMINS, state='*')
+async def get_users(message: types.Message, state: FSMContext):
+    await state.finish()
     all_applications = await db.select_all_applications()
     applications = []
     for i in all_applications:
@@ -102,7 +109,7 @@ async def see_applications(call: types.CallbackQuery, callback_data: dict):
     text = ""
     text += f"Ariza egasi: {user['full_name']}\n"
     text += f"Ariza sababi: {application['description']}\n"
-    text += f"Vaqt: {created_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+    text += f"Ariza yuborilgan vaqt: {created_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
     markup = await confirmation_markup(application['id'])
     await call.message.edit_text(text=text)
     await call.message.answer(text="Ruxsat berasizmi?", reply_markup=markup)
@@ -126,6 +133,7 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
         if not applications:
             text = "Hali dam olish uchun arizalar mavjud emas"
             await call.message.answer(text=text, reply_markup=back_menu)
+            await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
         else:
             text = "Arizalarni ko'rish uchun ulardan birini tanlang"
@@ -141,20 +149,9 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
         )
         text = "Siz arizani rad etdingiz"
 
-        # applications = await db.select_applications(id=application_id)
-        #
-        # application_user_id = applications[0]['user_id']
-        # application_user = await db.select_users(id=application_user_id)
-        #
-        # rejected_text = "❌❌\n"
-        # rejected_text += "Sizning arizangiz rad etildi.\n"
-        # rejected_text += f"Rad etilish sababi: 'sabab'\n\n"
-        # rejected_text += f"{user['full_name']}"
-        #
-        # await bot.send_message(chat_id=application_user[0]['telegram_id'], text=rejected_text)
-
         await call.message.answer(text=text, reply_markup=back_menu)
-        # await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+        text = "Izoh yozasizmi?"
+        await call.message.answer(text=text, reply_markup=confirm_keyboard)
     elif confirmation == 'confirm':
         users = await db.select_users(telegram_id=call.from_user.id)
         user = users[0]
@@ -165,21 +162,9 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
         )
         text = "Siz arizani tasdiqladingiz"
 
-        # applications = await db.select_applications(id=application_id)
-        # application_user_id = applications[0]['user_id']
-        # application_user = await db.select_users(id=application_user_id)
-        #
-        # confirmed_text = "✅✅\n"
-        # confirmed_text += "Sizning arizangiz tasdiqlandi va sizga ruhsat berildi.\n"
-        # if "sabab":
-        #     confirmed_text += f"Izoh: 'izoh'\n\n"
-        # confirmed_text += f"{user['full_name']}"
-        #
-        # await bot.send_message(chat_id=application_user[0]['telegram_id'], text=confirmed_text)
-
         await call.message.answer(text=text, reply_markup=back_menu)
-    text = "Izoh yozasizmi?"
-    await call.message.answer(text=text, reply_markup=confirm_keyboard)
+        text = "Izoh yozasizmi?"
+        await call.message.answer(text=text, reply_markup=confirm_keyboard)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
     await ApplicationState.confirmed_description.set()

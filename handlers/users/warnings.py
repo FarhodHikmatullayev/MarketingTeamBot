@@ -9,15 +9,17 @@ from loader import dp, db, bot
 from states.warnings import WarningState
 
 
-@dp.message_handler(text="Ogohlantirishlar", user_id=ADMINS)
-async def get_users(message: types.Message):
+@dp.message_handler(text="Ogohlantirishlar", user_id=ADMINS, state='*')
+async def get_users(message: types.Message, state: FSMContext):
+    await state.finish()
     text = "Xodimlardan birini tanlang"
     markup = await users_inline_keyboard()
     await message.answer(text=text, reply_markup=markup)
 
 
-@dp.message_handler(text="Ogohlantirishlar")
-async def send_warning(message: types.Message):
+@dp.message_handler(text="Ogohlantirishlar", state='*')
+async def send_warning(message: types.Message, state: FSMContext):
+    await state.finish()
     text = "Siz admin emassiz\n" \
            "Sizda ogohlantirish berish uchun ruhsat mavjud emas"
     await message.answer(text=text)
