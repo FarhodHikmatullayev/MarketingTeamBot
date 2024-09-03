@@ -152,6 +152,7 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
         await call.message.answer(text=text, reply_markup=back_menu)
         text = "Izoh yozasizmi?"
         await call.message.answer(text=text, reply_markup=confirm_keyboard)
+        await ApplicationState.confirmed_description.set()
     elif confirmation == 'confirm':
         users = await db.select_users(telegram_id=call.from_user.id)
         user = users[0]
@@ -165,9 +166,10 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
         await call.message.answer(text=text, reply_markup=back_menu)
         text = "Izoh yozasizmi?"
         await call.message.answer(text=text, reply_markup=confirm_keyboard)
+        await ApplicationState.confirmed_description.set()
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
-    await ApplicationState.confirmed_description.set()
+    
 
 
 @dp.callback_query_handler(text=['yes'], state=ApplicationState.confirmed_description)
