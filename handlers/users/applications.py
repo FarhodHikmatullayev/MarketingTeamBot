@@ -7,7 +7,7 @@ from data.config import ADMINS
 from keyboards.default.back_users import back_or_save_keyboard
 from keyboards.default.menu import back_menu, menu_keyboard
 from keyboards.inline.applications_keyboards import applications_keyboard, application_callback_data, \
-    confirmation_markup, application_confirm_callback_data
+    confirmation_markup, application_confirm_callback_data, confirmation_markup2
 from keyboards.inline.confirmation import confirm_keyboard
 from loader import dp, db, bot
 from states.applications import ApplicationState
@@ -56,10 +56,13 @@ async def save_warning(msg: types.Message, state: FSMContext):
     await msg.answer(text=text, reply_markup=back_menu)
     await state.finish()
     users = await db.select_users(id=user_id)
-    text = "Dam olish uchun yangi ariza kelib tushdi\n" \
-           f"Ariza egasi: {users[0]['full_name']}\n" \
-           "Arizalar bo'limidan kirib tekshirib ko'ring"
-    await send_message_to_admins(message=text)
+    text = "Dam olish uchun yangi ariza kelib tushdi\n"
+    text += f"Ariza egasi: {users[0]['full_name']}\n"
+    text += f"Ariza sababi: {description}\n"
+    text += f"Ariza yuborilgan vaqt: {application['created_at'].strftime('%Y-%m-%d %H:%M:%S')}\n"
+    markup = await confirmation_markup2(application['id'])
+    await msg.answer(text=text)
+    await msg.answer(text="Ruxsat berasizmi?", reply_markup=markup)
 
 
 @dp.message_handler(state=ApplicationState.description)
@@ -168,8 +171,6 @@ async def confirm_or_reject_application(call: types.CallbackQuery, callback_data
         await call.message.answer(text=text, reply_markup=confirm_keyboard)
         await ApplicationState.confirmed_description.set()
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
-
-    
 
 
 @dp.callback_query_handler(text=['yes'], state=ApplicationState.confirmed_description)

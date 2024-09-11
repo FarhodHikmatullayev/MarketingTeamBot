@@ -60,3 +60,27 @@ async def confirmation_markup(application_id):
         ]
     )
     return markup
+
+
+async def confirmation_markup2(application_id):
+    markup = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Tasdiqlash",
+                    callback_data=application_confirm_callback_data.new(
+                        application_id=application_id,
+                        confirmation="confirm"
+                    )
+                ),
+                InlineKeyboardButton(
+                    text="Rad etish",
+                    callback_data=application_confirm_callback_data.new(
+                        application_id=application_id,
+                        confirmation="reject"
+                    )
+                )
+            ]
+        ]
+    )
+    return markup
