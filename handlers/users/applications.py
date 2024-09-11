@@ -59,7 +59,7 @@ async def save_warning(msg: types.Message, state: FSMContext):
     text = "Dam olish uchun yangi ariza kelib tushdi\n"
     text += f"Ariza egasi: {users[0]['full_name']}\n"
     text += f"Ariza sababi: {description}\n"
-    text += f"Ariza yuborilgan vaqt: {application['created_at'].strftime('%Y-%m-%d %H:%M:%S')}\n"
+    text += f"Ariza yuborilgan vaqt: {(application['created_at'] + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')}\n"
     markup = await confirmation_markup2(application['id'])
     await msg.answer(text=text)
     await msg.answer(text="Ruxsat berasizmi?", reply_markup=markup)
