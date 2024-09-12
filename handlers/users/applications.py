@@ -61,8 +61,9 @@ async def save_warning(msg: types.Message, state: FSMContext):
     text += f"Ariza sababi: {description}\n"
     text += f"Ariza yuborilgan vaqt: {(application['created_at'] + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')}\n"
     markup = await confirmation_markup2(application['id'])
-    await msg.answer(text=text)
-    await msg.answer(text="Ruxsat berasizmi?", reply_markup=markup)
+    for admin in ADMINS:
+        await bot.send_message(chat_id=int(admin), text=text)
+        await bot.send_message(chat_id=int(admin), text='Ruxsat berasizmi?', reply_markup=markup)
 
 
 @dp.message_handler(state=ApplicationState.description)
