@@ -247,7 +247,7 @@ async def start_adding_confirmed_description(message: types.Message, state: FSMC
     else:
         text = "❌❌\n"
         text += "Sizning arizangiz rad etildi.\n"
-        text += f"Ariza: {application}\n"
+        text += f"Ariza: {application_description}\n"
         text += f"Rad etilish sababi: {confirmed_description}\n\n"
         text += f"{user['full_name']}"
 
