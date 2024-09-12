@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(StatusUsers)
 class StatusUsersAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user__full_name', 'at_work')
+    list_display = ('id', 'user', 'at_work')
     search_fields = ('user__full_name',)
 
 

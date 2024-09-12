@@ -2,10 +2,10 @@ from django.db import models
 
 
 class User(models.Model):
-    full_name = models.CharField(max_length=221, null=True, blank=True)
-    username = models.CharField(max_length=221, null=True, blank=True)
-    phone = models.CharField(max_length=13, null=True, blank=True)
-    telegram_id = models.BigIntegerField(unique=True)
+    full_name = models.CharField(max_length=221, null=True, blank=True, verbose_name="F.I.SH")
+    username = models.CharField(max_length=221, null=True, blank=True, verbose_name="USERNAME")
+    phone = models.CharField(max_length=13, null=True, blank=True, verbose_name="TELEFON RAQAM")
+    telegram_id = models.BigIntegerField(unique=True, verbose_name="TELEGRAM ID")
 
     class Meta:
         db_table = 'users'
@@ -17,8 +17,8 @@ class User(models.Model):
 
 
 class StatusUsers(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    at_work = models.BooleanField(default=False, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="FOYDALANUVCHI")
+    at_work = models.BooleanField(default=False, null=True, blank=True, verbose_name="ISHDAMI")
 
     class Meta:
         db_table = "status"
@@ -30,10 +30,10 @@ class StatusUsers(models.Model):
 
 
 class Registration(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    arrival_time = models.DateTimeField(null=True, blank=True)
-    departure_time = models.DateTimeField(null=True, blank=True)
-    total_time = models.DurationField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="FOYDALANUVCHI")
+    arrival_time = models.DateTimeField(null=True, blank=True, verbose_name="KELGAN VAQTI")
+    departure_time = models.DateTimeField(null=True, blank=True, verbose_name="KETGAN VAQTI")
+    total_time = models.DurationField(null=True, blank=True, verbose_name="ISHLAGAN VAQTI")
 
     class Meta:
         db_table = "registrations"
@@ -45,14 +45,14 @@ class Registration(models.Model):
 
 
 class Applications(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
-    description = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(null=True, blank=True)
-    is_confirmed = models.BooleanField(null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications', verbose_name="FOYDALANUVCHI")
+    description = models.TextField(null=True, blank=True, verbose_name="IZOH")
+    created_at = models.DateTimeField(null=True, blank=True, verbose_name="YARATILGAN VAQT")
+    is_confirmed = models.BooleanField(null=True, blank=True, verbose_name="TASDIQLANGANMI")
     confirmed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='confirmed_applications', null=True,
-                                     blank=True)
-    confirmed_description = models.TextField(null=True, blank=True)
-    confirmed_at = models.DateTimeField(null=True, blank=True)
+                                     blank=True, verbose_name="TASDIQLAGAN SHAXS")
+    confirmed_description = models.TextField(null=True, blank=True, verbose_name="TASDIQLASH IZOHI")
+    confirmed_at = models.DateTimeField(null=True, blank=True, verbose_name="TASDIQLANGAN VAQT")
 
     class Meta:
         db_table = 'applications'
@@ -64,10 +64,10 @@ class Applications(models.Model):
 
 
 class Warnings(models.Model):
-    text = models.TextField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='varnings')
-    warned_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='warned_users')
-    created_at = models.DateTimeField(null=True, blank=True)
+    text = models.TextField(null=True, blank=True, verbose_name="TEXT")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='varnings', verbose_name="FOYDALANUVCHI")
+    warned_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='warned_users', verbose_name="OGOHLANTIRGAN SHAXS")
+    created_at = models.DateTimeField(null=True, blank=True, verbose_name="YARATILGAN VAQT")
 
     class Meta:
         db_table = 'warnings'
