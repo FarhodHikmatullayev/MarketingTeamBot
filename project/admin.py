@@ -16,7 +16,7 @@ class StatusUsersAdmin(admin.ModelAdmin):
 
 @admin.register(Registration)
 class RegistrationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user__full_name', 'arrival_time', 'departure_time', 'total_time')
+    list_display = ('id', 'user', 'arrival_time', 'departure_time', 'total_time')
     search_fields = ('user__full_name',)
     list_filter = ('arrival_time', 'departure_time')
     readonly_fields = ('arrival_time', 'departure_time', 'total_time')
