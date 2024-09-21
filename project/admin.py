@@ -25,7 +25,7 @@ class RegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(Applications)
 class ApplicationsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user__full_name', 'is_confirmed', 'confirmed_by', 'created_at', 'confirmed_at')
+    list_display = ('id', 'user', 'is_confirmed', 'confirmed_by', 'created_at', 'confirmed_at')
     readonly_fields = ('confirmed_at', 'created_at')
     list_filter = ('confirmed_at', 'created_at')
     date_hierarchy = 'created_at'
