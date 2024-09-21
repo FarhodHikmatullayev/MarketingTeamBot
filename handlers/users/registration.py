@@ -40,6 +40,7 @@ async def start_registration(message: types.Message, state: FSMContext):
 async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     on_off = callback_data.get('on_off')
     user_id = int(callback_data.get('user_id'))
+    schedules = await db.select_schedules(user_id=user_id)
     status = await db.select_status(user_id=user_id)
     status = status[0]
     registrations_arrival = await db.get_today_registrations_for_user_by_arrival_time(user_id=user_id)
@@ -56,6 +57,9 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             arrival_time=datetime.datetime.now()
         )
         text = f"💼 {call.from_user.full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishga keldi"
+        if schedules:
+            schedule = schedules[0]
+            text += f"\nIsh vaqti: {schedule['arrival_time']} - {schedule['departure_time']}"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
         txt = "Siz ishga kelganingizni tasdiqladingiz"
@@ -68,6 +72,9 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     elif on_off == 'off' and not registrations_arrival:
         status = await db.update_status(id=status['id'], user_id=user_id)
         text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n"
+        if schedules:
+            schedule = schedules[0]
+            text += f"\nIsh vaqti: {schedule['arrival_time']} - {schedule['departure_time']}"
         txt = "Ishdan ketganingizni tasdiqladingiz"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
@@ -89,6 +96,9 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
         )
         text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n" \
                f"Umumiy {hours} soat {minutes} daqiqa vaqt ishladi"
+        if schedules:
+            schedule = schedules[0]
+            text += f"\nIsh vaqti: {schedule['arrival_time']} - {schedule['departure_time']}"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
         txt = "Ishdan ketganingizni tasdiqladingiz"
