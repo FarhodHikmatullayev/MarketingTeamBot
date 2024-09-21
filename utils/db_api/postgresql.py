@@ -61,7 +61,7 @@ class Database:
         return await self.execute(sql, phone, username, telegram_id, full_name, fetchrow=True)
 
     async def select_all_users(self):
-        sql = "SELECT * FROM Users"
+        sql = "SELECT * FROM Users WHERE is_active = TRUE"
         return await self.execute(sql, fetch=True)
 
     async def select_users(self, **kwargs):
@@ -106,7 +106,13 @@ class Database:
     # for status
 
     async def select_all_status(self):
-        sql = "SELECT * FROM Status"
+        # sql = "SELECT * FROM Status"
+        sql = """
+                SELECT s.*
+                FROM Status s
+                INNER JOIN Users u ON s.user_id = u.id
+                WHERE u.is_active = TRUE
+            """
         return await self.execute(sql, fetch=True)
 
     async def create_status(self, user_id, at_work=False):
