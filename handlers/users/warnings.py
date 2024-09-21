@@ -11,6 +11,18 @@ from states.warnings import WarningState
 
 @dp.message_handler(text="Ogohlantirishlar", user_id=ADMINS, state='*')
 async def get_users(message: types.Message, state: FSMContext):
+    user_telegram_id = message.from_user.id
+    users = await db.select_users(telegram_id=user_telegram_id)
+    if not users:
+        await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+        return
+    else:
+        user = users[0]
+        user_is_active = user['is_active']
+        if not user_is_active:
+            await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+            return
+
     await state.finish()
     text = "Xodimlardan birini tanlang"
     markup = await users_inline_keyboard()

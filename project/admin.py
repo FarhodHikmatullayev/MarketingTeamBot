@@ -4,7 +4,7 @@ from .models import User, Applications, Registration, StatusUsers
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'full_name', 'username', 'phone', 'telegram_id')
+    list_display = ('id', 'full_name', 'username', 'phone', 'telegram_id', 'is_active')
     search_fields = ('username', 'phone', 'telegram_id')
 
 

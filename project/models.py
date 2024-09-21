@@ -6,6 +6,7 @@ class User(models.Model):
     username = models.CharField(max_length=221, null=True, blank=True, verbose_name="USERNAME")
     phone = models.CharField(max_length=13, null=True, blank=True, verbose_name="TELEFON RAQAM")
     telegram_id = models.BigIntegerField(unique=True, verbose_name="TELEGRAM ID")
+    is_active = models.BooleanField(default=False, verbose_name="Is Active?")
 
     class Meta:
         db_table = 'users'
@@ -66,7 +67,8 @@ class Applications(models.Model):
 class Warnings(models.Model):
     text = models.TextField(null=True, blank=True, verbose_name="TEXT")
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='varnings', verbose_name="FOYDALANUVCHI")
-    warned_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='warned_users', verbose_name="OGOHLANTIRGAN SHAXS")
+    warned_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='warned_users',
+                                  verbose_name="OGOHLANTIRGAN SHAXS")
     created_at = models.DateTimeField(null=True, blank=True, verbose_name="YARATILGAN VAQT")
 
     class Meta:

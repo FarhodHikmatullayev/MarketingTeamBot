@@ -18,6 +18,17 @@ from utils.send_message import send_message_to_admins
 async def ask_for(message: types.Message, state: FSMContext):
     user_telegram_id = message.from_user.id
     users = await db.select_users(telegram_id=user_telegram_id)
+
+    if not users:
+        await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+        return
+    else:
+        user = users[0]
+        user_is_active = user['is_active']
+        if not user_is_active:
+            await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+            return
+
     user_id = users[0]['id']
 
     await state.update_data(

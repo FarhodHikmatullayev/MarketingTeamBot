@@ -12,6 +12,18 @@ from loader import dp, db, bot
 
 @dp.message_handler(text="Keldi-ketdi registratsiya", state='*')
 async def start_registration(message: types.Message, state: FSMContext):
+    user_telegram_id = message.from_user.id
+    users = await db.select_users(telegram_id=user_telegram_id)
+    if not users:
+        await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+        return
+    else:
+        user = users[0]
+        user_is_active = user['is_active']
+        if not user_is_active:
+            await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+            return
+
     await state.finish()
     user_telegram_id = message.from_user.id
     users = await db.select_users(telegram_id=user_telegram_id)

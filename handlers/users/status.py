@@ -7,6 +7,18 @@ from loader import dp, db
 
 @dp.message_handler(text="Xodimlar statusi")
 async def get_users(message: types.Message):
+    user_telegram_id = message.from_user.id
+    users = await db.select_users(telegram_id=user_telegram_id)
+    if not users:
+        await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+        return
+    else:
+        user = users[0]
+        user_is_active = user['is_active']
+        if not user_is_active:
+            await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+            return
+
     all_status = await db.select_all_status()
     if not all_status:
         text = "Hali xodimlarning statuslari mavjud emas"
