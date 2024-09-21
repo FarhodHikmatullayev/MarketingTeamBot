@@ -47,7 +47,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     if on_off == 'on' and registrations_arrival:
         registration = registrations_arrival[0]
         arrival_time = registration['arrival_time']
-        txt = f"Siz bugun {(arrival_time + datetime.timedelta(hours=5)).strftime('%d-%B-%Y, %H:%M')} da ishga kelganingizni tasdiqlagansiz"
+        txt = f"Siz bugun {(arrival_time + datetime.timedelta(hours=5)).strftime('%d.%m.%Y, %H:%M')} da ishga kelganingizni tasdiqlagansiz"
 
     elif on_off == 'on':
         status = await db.update_status(id=status['id'], user_id=user_id, at_work=True)
@@ -55,7 +55,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             user_id=user_id,
             arrival_time=datetime.datetime.now()
         )
-        text = f"💼 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishga keldi"
+        text = f"💼 {call.from_user.full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishga keldi"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
         txt = "Siz ishga kelganingizni tasdiqladingiz"
@@ -63,11 +63,11 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     elif on_off == 'off' and registrations_departure:
         registration = registrations_departure[0]
         departure_time = registration['departure_time']
-        txt = f"Siz bugun {(departure_time + datetime.timedelta(hours=5)).strftime('%d-%B-%Y, %H:%M')} da ishdan ketganingizni tasdiqlagansiz"
+        txt = f"Siz bugun {(departure_time + datetime.timedelta(hours=5)).strftime('%d.%m.%Y, %H:%M')} da ishdan ketganingizni tasdiqlagansiz"
 
     elif on_off == 'off' and not registrations_arrival:
         status = await db.update_status(id=status['id'], user_id=user_id)
-        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi\n"
+        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n"
         txt = "Ishdan ketganingizni tasdiqladingiz"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
@@ -87,7 +87,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             departure_time=datetime.datetime.now(),
             total_time=total_time,
         )
-        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')} da ishdan ketdi\n" \
+        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n" \
                f"Umumiy {hours} soat {minutes} daqiqa vaqt ishladi"
         await bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
         # await bot.send_message(chat_id=call.message.chat.id, text=text)
