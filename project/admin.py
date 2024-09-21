@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Applications, Registration, StatusUsers
+from .models import User, Applications, Registration, StatusUsers, Schedule
 
 
 @admin.register(User)
@@ -30,3 +30,10 @@ class ApplicationsAdmin(admin.ModelAdmin):
     list_filter = ('confirmed_at', 'created_at')
     date_hierarchy = 'created_at'
     search_fields = ('user__full_name', 'confirmed_by__full_name')
+
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'arrival_time', 'departure_time')
+    search_fields = ('user__full_name', 'arrival_time', 'departure_time')
+    list_filter = ('arrival_time', 'departure_time')
+

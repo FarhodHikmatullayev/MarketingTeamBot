@@ -70,7 +70,7 @@ async def save_warning(msg: types.Message, state: FSMContext):
     text = "Dam olish uchun yangi ariza kelib tushdi\n"
     text += f"Ariza egasi: {users[0]['full_name']}\n"
     text += f"Ariza sababi: {description}\n"
-    text += f"Ariza yuborilgan vaqt: {(application['created_at'] + datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')}\n"
+    text += f"Ariza yuborilgan vaqt: {(application['created_at'] + datetime.timedelta(hours=5)).strftime('%d.%m.%Y %H:%M')}\n"
     markup = await confirmation_markup2(application['id'])
     for admin in ADMINS:
         await bot.send_message(chat_id=int(admin), text=text)

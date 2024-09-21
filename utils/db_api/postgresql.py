@@ -152,3 +152,21 @@ class Database:
             WHERE DATE(departure_time) = $1 AND user_id = $2
         """
         return await self.execute(sql, today, user_id, fetch=True)
+
+    # for schedules
+    async def select_schedules(self, **kwargs):
+        sql = "SELECT * FROM Schedule WHERE "
+        sql, parameters = self.format_args(sql, parameters=kwargs)
+        return await self.execute(sql, *parameters, fetch=True)
+
+    async def create_schedule(self, user_id, departure_time, arrival_time):
+        sql = "INSERT INTO Schedule (user_id, departure_time, arrival_time) VALUES($1, $2, $3) returning *"
+        return await self.execute(sql, user_id, departure_time, arrival_time, fetchrow=True)
+
+    async def update_schedule(self, id, departure_time, arrival_time):
+        sql = "UPDATE Schedule SET departure_time=$2, arrival_time=$3 WHERE id=$1"
+        return await self.execute(sql, id, departure_time, arrival_time, execute=True)
+
+    async def delete_schedule(self, id):
+        sql = "DELETE FROM Schedule WHERE id=$1"
+        return await self.execute(sql, id, execute=True)

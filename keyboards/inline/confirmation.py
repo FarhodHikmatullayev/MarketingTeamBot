@@ -8,3 +8,13 @@ confirm_keyboard = InlineKeyboardMarkup(
         ]
     ]
 )
+
+confirmation_for_edit_or_delete = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Edit', callback_data='edit'),
+            InlineKeyboardButton(text='Delete', callback_data='delete'),
+            InlineKeyboardButton(text='Back', callback_data='back'),
+        ]
+    ]
+)

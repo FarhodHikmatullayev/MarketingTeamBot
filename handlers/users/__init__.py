@@ -5,4 +5,5 @@ from . import warnings
 from . import applications
 from . import status
 from . import registration
+from . import schedules
 from . import echo

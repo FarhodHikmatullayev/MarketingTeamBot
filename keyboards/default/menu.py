@@ -14,11 +14,15 @@ back_menu = ReplyKeyboardMarkup(
 
 async def menu_keyboard(user_id):
     if str(user_id) in ADMINS:
+
         return ReplyKeyboardMarkup(
             resize_keyboard=True,
             keyboard=[
                 [
                     KeyboardButton(text='Xodimlar statusi'),
+                    KeyboardButton(text='Ish grafiklari')
+                ],
+                [
                     KeyboardButton(text='Keldi-ketdi registratsiya')
                 ],
                 [

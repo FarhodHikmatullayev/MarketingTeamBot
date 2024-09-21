@@ -78,3 +78,17 @@ class Warnings(models.Model):
 
     def __str__(self):
         return f"{self.user.full_name} uchun ogohlantirish"
+
+
+class Schedule(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="FOYDALANUVCHI")
+    arrival_time = models.CharField(null=True, blank=True, verbose_name="KELISH VAQTI")
+    departure_time = models.CharField(null=True, blank=True, verbose_name="KETISH VAQTI")
+
+    class Meta:
+        db_table = 'schedule'
+        verbose_name = 'Schedule'
+        verbose_name_plural = 'Ish grafiklari'
+
+    def __str__(self):
+        return f"{self.user.full_name}"
