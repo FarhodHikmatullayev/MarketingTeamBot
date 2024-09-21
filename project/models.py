@@ -82,8 +82,8 @@ class Warnings(models.Model):
 
 class Schedule(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="FOYDALANUVCHI")
-    arrival_time = models.CharField(null=True, blank=True, verbose_name="KELISH VAQTI")
-    departure_time = models.CharField(null=True, blank=True, verbose_name="KETISH VAQTI")
+    arrival_time = models.CharField(max_length=221, null=True, blank=True, verbose_name="KELISH VAQTI")
+    departure_time = models.CharField(max_length=221, null=True, blank=True, verbose_name="KETISH VAQTI")
 
     class Meta:
         db_table = 'schedule'
