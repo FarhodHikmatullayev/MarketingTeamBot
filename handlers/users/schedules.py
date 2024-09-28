@@ -73,7 +73,7 @@ async def back_to_schedules(call: types.CallbackQuery, state: FSMContext):
 
     text = "Xodimlardan birini tanlang"
     markup = await users_inline_keyboard1()
-    await call.message.answer(text=text, reply_markup=markup)
+    await call.message.edit_text(text=text, reply_markup=markup)
 
 
 @dp.callback_query_handler(text='delete', state=ScheduleUpdateState.user_id)
