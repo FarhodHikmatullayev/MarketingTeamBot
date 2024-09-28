@@ -100,7 +100,7 @@ async def start_editing_schedule(call: types.CallbackQuery, state: FSMContext):
     user = users[0]
     user_full_name = user['full_name']
 
-    text = f"{user_full_name} uchun kelish vaqtini kiriting: misol: 8:30"
+    text = f"{user_full_name} uchun kelish vaqtini kiriting: \nMisol: 8:30"
 
     await call.message.answer(text=text, reply_markup=back_menu)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
@@ -144,7 +144,7 @@ async def confirm_creating_schedule(call: types.CallbackQuery, state: FSMContext
 async def confirm_creating_schedule(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     user_id = data.get('user_id')
-    await call.message.answer(text="Xodimning kelish vaqtini kiriting: Misol: 08:20", reply_markup=back_menu)
+    await call.message.answer(text="Xodimning kelish vaqtini kiriting: \nMisol: 08:20", reply_markup=back_menu)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     await ScheduleCreateState.arrival_time.set()
 
