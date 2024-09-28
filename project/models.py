@@ -6,7 +6,7 @@ class User(models.Model):
     username = models.CharField(max_length=221, null=True, blank=True, verbose_name="USERNAME")
     phone = models.CharField(max_length=13, null=True, blank=True, verbose_name="TELEFON RAQAM")
     telegram_id = models.BigIntegerField(unique=True, verbose_name="TELEGRAM ID")
-    is_active = models.BooleanField(default=False, verbose_name="Is Active?")
+    is_active = models.BooleanField(default=False, verbose_name="Is Active?", null=True, blank=True)
 
     class Meta:
         db_table = 'users'
