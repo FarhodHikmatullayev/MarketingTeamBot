@@ -71,7 +71,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
 
     elif on_off == 'off' and not registrations_arrival:
         status = await db.update_status(id=status['id'], user_id=user_id)
-        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now() + datetime.timedelta(hours=5)).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n"
+        text = f"🏠 {call.from_user.full_name} {datetime.datetime.now().strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n"
         if schedules:
             schedule = schedules[0]
             text += f"\nIsh vaqti: {schedule['arrival_time']} - {schedule['departure_time']}"
