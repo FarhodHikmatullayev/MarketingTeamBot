@@ -4,7 +4,8 @@ from aiogram.dispatcher import FSMContext
 from data.config import ADMINS
 from keyboards.default.menu import menu_keyboard, back_menu
 
-from keyboards.inline.confirmation import confirm_keyboard, confirmation_for_edit_or_delete
+from keyboards.inline.confirmation import confirm_keyboard, confirmation_for_edit_or_delete, \
+    confirmation_for_edit_or_delete_without_back_button
 from keyboards.inline.users_keyboard import users_callback_data1, users_inline_keyboard1
 
 from loader import dp, db, bot
@@ -25,7 +26,7 @@ async def get_users(message: types.Message, state: FSMContext):
             await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
             return
 
-    await state.finish()
+    await ScheduleUpdateState.user_id.set()
     text = "Xodimlardan birini tanlang"
     markup = await users_inline_keyboard1()
     await message.answer(text=text, reply_markup=markup)
@@ -39,7 +40,7 @@ async def get_user(message: types.Message, state: FSMContext):
     await message.answer(text=text)
 
 
-@dp.callback_query_handler(users_callback_data1.filter())
+@dp.callback_query_handler(users_callback_data1.filter(), state=ScheduleUpdateState.user_id)
 async def start_making_warning(call: types.CallbackQuery, callback_data: dict, state: FSMContext):
     user_telegram_id = call.from_user.id
     users = await db.select_users(telegram_id=user_telegram_id)
@@ -59,7 +60,7 @@ async def start_making_warning(call: types.CallbackQuery, callback_data: dict, s
                                      f"Ketish vaqti: {schedules[0]['departure_time']}\n")
         await call.message.answer("O'zgartirishni yoki o'chirishni xohlaysizmi",
                                   reply_markup=confirmation_for_edit_or_delete)
-        await ScheduleUpdateState.user_id.set()
+
     await state.update_data(
         {
             'user_id': user_id,
@@ -218,3 +219,39 @@ async def confirm_editing_schedule(call: types.CallbackQuery, state: FSMContext)
     await call.message.answer(text="Muvaffaqiyatli o'zgartirildi", reply_markup=back_menu)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     await state.finish()
+
+
+# for users
+@dp.message_handler(text="Ish grafigim", state='*')
+async def get_users(message: types.Message, state: FSMContext):
+    user_telegram_id = message.from_user.id
+    users = await db.select_users(telegram_id=user_telegram_id)
+    if not users:
+        await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+        return
+
+    user = users[0]
+    user_id = user['id']
+    user_is_active = user['is_active']
+    if not user_is_active:
+        await message.answer(text="Sizda botdan foydalanish uchun ruxsat mavjud emas!")
+        return
+    await ScheduleUpdateState.user_id.set()
+    await state.update_data(
+        {
+            'user_id': user_id,
+        }
+    )
+
+    schedules = await db.select_schedules(user_id=user_id)
+    if not schedules:
+        await message.answer(text="Hali sizning ish grafigingiz kiritilmagan")
+        await message.answer(text="Ish grafigi yaratasizmi?", reply_markup=confirm_keyboard)
+        await ScheduleCreateState.user_id.set()
+
+    else:
+        await message.answer(f"Sizning ish grafigingiz:\n"
+                                f"Kelish vaqti: {schedules[0]['arrival_time']}\n"
+                                f"Ketish vaqti: {schedules[0]['departure_time']}\n")
+        await message.answer("O'zgartirishni yoki o'chirishni xohlaysizmi",
+                             reply_markup=confirmation_for_edit_or_delete_without_back_button)

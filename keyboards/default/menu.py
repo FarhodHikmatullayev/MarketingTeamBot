@@ -43,6 +43,9 @@ async def menu_keyboard(user_id):
                     KeyboardButton(text='Keldi-ketdi registratsiya')
                 ],
                 [
+                    KeyboardButton(text="Ish grafigim")
+                ],
+                [
                     KeyboardButton(text='Dam olish so\'rash'),
                 ],
             ]
