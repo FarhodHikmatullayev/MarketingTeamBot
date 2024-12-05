@@ -19,7 +19,7 @@ class RegistrationAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'arrival_time', 'departure_time', 'total_time')
     search_fields = ('user__full_name',)
     list_filter = ('arrival_time', 'departure_time')
-    readonly_fields = ('arrival_time', 'departure_time', 'total_time')
+    # readonly_fields = ('arrival_time', 'departure_time', 'total_time')
     date_hierarchy = 'arrival_time'
 
 
