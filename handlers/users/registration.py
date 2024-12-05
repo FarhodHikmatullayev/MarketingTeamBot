@@ -42,6 +42,9 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
     user_id = int(callback_data.get('user_id'))
     schedules = await db.select_schedules(user_id=user_id)
     status = await db.select_status(user_id=user_id)
+    users = await db.select_users(id=user_id)
+    user = users[0]
+    full_name = user['full_name']
     status = status[0]
     registrations_arrival = await db.get_today_registrations_for_user_by_arrival_time(user_id=user_id)
     registrations_departure = await db.get_today_registrations_for_user_by_departure_time(user_id=user_id)
@@ -56,7 +59,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             user_id=user_id,
             arrival_time=datetime.datetime.now()
         )
-        text = f"💼 {call.from_user.full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishga keldi"
+        text = f"💼 {full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishga keldi"
         if schedules:
             schedule = schedules[0]
             text += f"\nIsh vaqti: {schedule['arrival_time']} - {schedule['departure_time']}"
@@ -71,7 +74,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
 
     elif on_off == 'off' and not registrations_arrival:
         status = await db.update_status(id=status['id'], user_id=user_id)
-        text = f"🏠 {call.from_user.full_name} {datetime.datetime.now().strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n"
+        text = f"🏠 {full_name} {datetime.datetime.now().strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n"
         if schedules:
             schedule = schedules[0]
             text += f"\nIsh vaqti: {schedule['arrival_time']} - {schedule['departure_time']}"
@@ -94,7 +97,7 @@ async def on_off_status(call: types.CallbackQuery, callback_data=dict):
             departure_time=datetime.datetime.now(),
             total_time=total_time,
         )
-        text = f"🏠 {call.from_user.full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n" \
+        text = f"🏠 {full_name} {(datetime.datetime.now()).strftime('%d.%m.%Y, %H:%M')} da ishdan ketdi\n" \
                f"Umumiy {hours} soat {minutes} daqiqa vaqt ishladi"
         if schedules:
             schedule = schedules[0]
